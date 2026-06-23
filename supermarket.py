@@ -130,6 +130,25 @@ def billing_page():
         else:
             print("Invalid option. Choose a/r/c/q.")
 
+# ---------- (e) NEW: Senior Citizen Discount ----------
+def apply_discount(amount, is_senior=False):
+    """
+    Apply a 10% discount for senior citizens.
+
+    Args:
+        amount: Total bill amount
+        is_senior: True if customer is 60+
+
+    Returns:
+        Final amount after discount
+    """
+    if amount < 0:
+        raise ValueError("Amount cannot be negative")
+
+    if is_senior:
+        discounted = amount * 0.9  # 10% off
+        return round(discounted, 2)
+    return amount
 
 # ---------- Main Menu ----------
 def main():
