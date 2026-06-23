@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Python Version') {
+            steps {
+                bat 'python --version'
+            }
+        }
+
+        stage('Lint Check') {
+            steps {
+                bat 'python -m py_compile supermarket.py'
+                echo 'Python syntax check passed'
+            }
+        }
+
+        stage('Smoke Test') {
+            steps {
+                bat '''
+                python -c "from supermarket import display_inventory, total_count, check_low_stock; display_inventory(); total_count(); check_low_stock()"
+                '''
+            }
+        }
+
+        stage('Branch Info') {
+            steps {
+                echo "Built branch: ${env.BRANCH_NAME}"
+            }
+        }
+    }
+
+    post {
+        success { echo "SUCCESS: ${env.BRANCH_NAME} build passed" }
+        failure { echo "FAILURE: ${env.BRANCH_NAME} build failed" }
+    }
+}
